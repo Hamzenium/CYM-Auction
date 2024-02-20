@@ -11,7 +11,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-// Middleware to parse JSON request body
+// Middleware to parse JSON request body werere
 app.use(bodyParser.json());
 
 app.locals.admin = admin;
