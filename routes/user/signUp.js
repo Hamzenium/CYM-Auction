@@ -13,7 +13,11 @@ router.post('/users', async (req, res) => {
   
       await req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
         email: email,
-        name: name
+        name: name,
+        items: [],
+        itemsBought: [],
+        itemsDelivered:[]
+
       });
   
       res.status(201).json({ message: 'User created successfully', userId: userRecord.uid });

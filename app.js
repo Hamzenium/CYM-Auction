@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
-const usersRouter = require('./routes/signUp');
+const usersRouter = require('./routes/user/signUp');
 
 const app = express();
 const PORT = process.env.PORT || 3100;
