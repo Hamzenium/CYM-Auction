@@ -60,7 +60,8 @@ router.post('/items', function _callee(req, res) {
       }
     }
   }, null, null, [[1, 10]]);
-});
+}); //   retrieve the item's dashboard containing all the details of the auction item
+
 router.get('/items/:itemId', function _callee2(req, res) {
   var itemId, itemDoc, itemData;
   return regeneratorRuntime.async(function _callee2$(_context2) {
@@ -106,5 +107,40 @@ router.get('/items/:itemId', function _callee2(req, res) {
       }
     }
   }, null, null, [[1, 11]]);
+}); //  edit the item's dashboard containing all the details of the auction item
+
+router.put('/items/:itemId', function _callee3(req, res) {
+  var itemId, newData;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          itemId = req.params.itemId;
+          newData = req.body;
+          _context3.prev = 2;
+          _context3.next = 5;
+          return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('items').doc(itemId).update(newData));
+
+        case 5:
+          res.status(200).json({
+            message: 'Item updated successfully'
+          });
+          _context3.next = 12;
+          break;
+
+        case 8:
+          _context3.prev = 8;
+          _context3.t0 = _context3["catch"](2);
+          console.error('Error updating item:', _context3.t0);
+          res.status(500).json({
+            error: 'Internal server error'
+          });
+
+        case 12:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[2, 8]]);
 });
 module.exports = router;

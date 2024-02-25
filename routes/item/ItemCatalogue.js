@@ -32,6 +32,8 @@ router.post('/items', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+//   retrieve the item's dashboard containing all the details of the auction item
   router.get('/items/:itemId', async (req, res) => {
     const itemId = req.params.itemId;
     try {
@@ -45,6 +47,19 @@ router.post('/items', async (req, res) => {
       res.status(200).json({ item: itemData });
     } catch (error) {
       console.error('Error fetching item:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  //  edit the item's dashboard containing all the details of the auction item
+  router.put('/items/:itemId', async (req, res) => {
+    const itemId = req.params.itemId;
+    const newData = req.body;
+  
+    try {
+      await req.app.locals.admin.firestore().collection('items').doc(itemId).update(newData);
+      res.status(200).json({ message: 'Item updated successfully' });
+    } catch (error) {
+      console.error('Error updating item:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
