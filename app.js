@@ -1,13 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const admin = require('firebase-admin');
 const usersRouter = require('./routes/user/signUp');
 const itemsRouter = require('./routes/item/ItemCatalogue');
 const searchRouter = require('./routes/search/invertedSearch');
 
 const app = express();
-const PORT = process.env.PORT || 3100;
-
 const serviceAccount = require('./key.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -19,13 +18,14 @@ app.use(bodyParser.json());
 app.locals.admin = admin;
 
 // Routes
+app.use(cors());
 app.use('/api', usersRouter);
 app.use('/api', itemsRouter);
 app.use('/api', searchRouter);
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+app.listen(process.env.PORT || 3100, () => {
+	console.log('http://localhost:3100/')
+})
 
 module.exports = app;
