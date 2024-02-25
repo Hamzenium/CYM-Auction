@@ -3,23 +3,30 @@
 var express = require('express');
 
 var router = express.Router();
-router.post('/items', function _callee(req, res) {
-  var _req$body, title, description, startingPrice, sellerId, images, category, condition, otherDetails, itemRef;
+
+var search = require('../search/invertedSearch');
+
+var addSearch = require('../search/invertedSearch');
+
+router.post('/items/:userId', function _callee(req, res) {
+  var userID, _req$body, title, description, startingPrice, images, category, condition, otherDetails, itemRef, _JSON;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _req$body = req.body, title = _req$body.title, description = _req$body.description, startingPrice = _req$body.startingPrice, sellerId = _req$body.sellerId, images = _req$body.images, category = _req$body.category, condition = _req$body.condition, otherDetails = _req$body.otherDetails;
-          _context.prev = 1;
-          _context.next = 4;
+          userID = req.params.userId;
+          _req$body = req.body, title = _req$body.title, description = _req$body.description, startingPrice = _req$body.startingPrice, images = _req$body.images, category = _req$body.category, condition = _req$body.condition, otherDetails = _req$body.otherDetails;
+          _context.prev = 2;
+          _context.next = 5;
           return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('items').add({
             title: title,
             description: description,
             startingPrice: startingPrice,
             currentPrice: startingPrice,
             bidIncrement: 100,
-            sellerId: sellerId,
+            sellerId: userID,
+            // Use userID here
             images: images,
             category: category,
             condition: condition,
@@ -31,35 +38,44 @@ router.post('/items', function _callee(req, res) {
             otherDetails: otherDetails
           }));
 
-        case 4:
+        case 5:
           itemRef = _context.sent;
-          _context.next = 7;
-          return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('users').doc(sellerId).update({
-            items: req.app.locals.admin.firestore.FieldValue.arrayUnion(itemRef.id)
+          _context.next = 8;
+          return regeneratorRuntime.awrap(addSearch(itemRef.id, title, description, req.app.locals.admin));
+
+        case 8:
+          _JSON = {
+            "itemRef": itemRef.id,
+            "title": title,
+            "description": description
+          };
+          _context.next = 11;
+          return regeneratorRuntime.awrap(admin.firestore().collection('users').doc(userID).update({
+            items: req.app.locals.admin.firestore.FieldValue.arrayUnion(_JSON)
           }));
 
-        case 7:
+        case 11:
           res.status(201).json({
             message: 'Item created successfully',
             itemId: itemRef.id
           });
-          _context.next = 14;
+          _context.next = 18;
           break;
 
-        case 10:
-          _context.prev = 10;
-          _context.t0 = _context["catch"](1);
+        case 14:
+          _context.prev = 14;
+          _context.t0 = _context["catch"](2);
           console.error('Error creating item:', _context.t0);
           res.status(500).json({
             error: 'Internal server error'
           });
 
-        case 14:
+        case 18:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[1, 10]]);
+  }, null, null, [[2, 14]]);
 }); //   retrieve the item's dashboard containing all the details of the auction item
 
 router.get('/items/:itemId', function _callee2(req, res) {

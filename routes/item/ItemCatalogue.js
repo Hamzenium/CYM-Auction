@@ -1,37 +1,50 @@
 const express = require('express');
 const router = express.Router();
+const search = require('../search/invertedSearch');
+const addSearch = require('../search/invertedSearch');
 
-router.post('/items', async (req, res) => {
-    const { title, description, startingPrice, sellerId, images, category, condition, otherDetails } = req.body;
+router.post('/items/:userId', async (req, res) => {
+    const userID = req.params.userId;
+    const { title, description, startingPrice, images, category, condition, otherDetails } = req.body;
   
     try {
-      const itemRef = await req.app.locals.admin.firestore().collection('items').add({
-        title: title,
-        description: description,
-        startingPrice: startingPrice,
-        currentPrice: startingPrice, 
-        bidIncrement: 100, 
-        sellerId: sellerId,
-        images: images,
-        category: category,
-        condition: condition,
-        auctionStatus: 'open', 
-        startTime: req.app.locals.admin.firestore.FieldValue.serverTimestamp(), // Current timestamp
-        endTime: null, 
-        winningBidderId: null, 
-        otherDetails: otherDetails
-      });
+        const itemRef = await req.app.locals.admin.firestore().collection('items').add({
+            title: title,
+            description: description,
+            startingPrice: startingPrice,
+            currentPrice: startingPrice, 
+            bidIncrement: 100, 
+            sellerId: userID, 
+            images: images,
+            category: category,
+            condition: condition,
+            auctionStatus: 'open', 
+            startTime: req.app.locals.admin.firestore.FieldValue.serverTimestamp(), 
+            endTime: null, 
+            winningBidderId: null, 
+            otherDetails: otherDetails
+        });
+
+        await addSearch(itemRef.id, title, description, req.app.locals.admin)
+
+        // Construct the JSON object
+        const itemObject = {
+            itemRef: itemRef.id,
+            title: title,
+            description: description
+        };
+        await req.app.locals.admin.firestore().collection('users').doc(userID).update({
+            items: req.app.locals.admin.firestore.FieldValue.arrayUnion(itemObject)
+        });
   
-      await req.app.locals.admin.firestore().collection('users').doc(sellerId).update({
-        items: req.app.locals.admin.firestore.FieldValue.arrayUnion(itemRef.id)
-      });
-  
-      res.status(201).json({ message: 'Item created successfully', itemId: itemRef.id });
+        res.status(201).json({ message: 'Item created successfully', itemId: itemRef.id });
     } catch (error) {
-      console.error('Error creating item:', error);
-      res.status(500).json({ error: 'Internal server error' });
+        console.error('Error creating item:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
+
+
 
 //   retrieve the item's dashboard containing all the details of the auction item
   router.get('/items/:itemId', async (req, res) => {
@@ -64,5 +77,6 @@ router.post('/items', async (req, res) => {
     }
   });
   
+
   
 module.exports = router;
