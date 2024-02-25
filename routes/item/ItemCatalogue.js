@@ -32,5 +32,22 @@ router.post('/items', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+  router.get('/items/:itemId', async (req, res) => {
+    const itemId = req.params.itemId;
+    try {
+      const itemDoc = await req.app.locals.admin.firestore().collection('items').doc(itemId).get();
+  
+      if (!itemDoc.exists) {
+        return res.status(404).json({ error: 'Item not found' });
+      }
+  
+      const itemData = itemDoc.data();
+      res.status(200).json({ item: itemData });
+    } catch (error) {
+      console.error('Error fetching item:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
   
 module.exports = router;

@@ -61,4 +61,50 @@ router.post('/items', function _callee(req, res) {
     }
   }, null, null, [[1, 10]]);
 });
+router.get('/items/:itemId', function _callee2(req, res) {
+  var itemId, itemDoc, itemData;
+  return regeneratorRuntime.async(function _callee2$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          itemId = req.params.itemId;
+          _context2.prev = 1;
+          _context2.next = 4;
+          return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('items').doc(itemId).get());
+
+        case 4:
+          itemDoc = _context2.sent;
+
+          if (itemDoc.exists) {
+            _context2.next = 7;
+            break;
+          }
+
+          return _context2.abrupt("return", res.status(404).json({
+            error: 'Item not found'
+          }));
+
+        case 7:
+          itemData = itemDoc.data();
+          res.status(200).json({
+            item: itemData
+          });
+          _context2.next = 15;
+          break;
+
+        case 11:
+          _context2.prev = 11;
+          _context2.t0 = _context2["catch"](1);
+          console.error('Error fetching item:', _context2.t0);
+          res.status(500).json({
+            error: 'Internal server error'
+          });
+
+        case 15:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[1, 11]]);
+});
 module.exports = router;
