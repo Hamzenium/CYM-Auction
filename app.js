@@ -24,8 +24,8 @@ app.use('/api', itemsRouter);
 app.use('/api', searchRouter);
 
 
-app.listen(process.env.PORT || 3100, () => {
-	console.log('http://localhost:3100/')
-})
+app.listen(process.env.PORT || 3000, function(){
+  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
 
 module.exports = app;
