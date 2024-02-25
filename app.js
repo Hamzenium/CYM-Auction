@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const usersRouter = require('./routes/user/signUp');
+const itemsRouter = require('./routes/item/ItemCatalogue');
 
 const app = express();
 const PORT = process.env.PORT || 3100;
@@ -18,6 +19,7 @@ app.locals.admin = admin;
 
 // Routes
 app.use('/api', usersRouter);
+app.use('/api', itemsRouter);
 
 
 app.listen(PORT, () => {

@@ -8,6 +8,8 @@ var admin = require('firebase-admin');
 
 var usersRouter = require('./routes/user/signUp');
 
+var itemsRouter = require('./routes/item/ItemCatalogue');
+
 var app = express();
 var PORT = process.env.PORT || 3100;
 
@@ -21,6 +23,7 @@ app.use(bodyParser.json());
 app.locals.admin = admin; // Routes
 
 app.use('/api', usersRouter);
+app.use('/api', itemsRouter);
 app.listen(PORT, function () {
   console.log("Server is running on http://localhost:".concat(PORT));
 });
