@@ -17,7 +17,8 @@ router.post('/users', async (req, res) => {
         name: name,
         items: [],
         itemsBought: [],
-        itemsDelivered:[]
+        itemsDelivered:[],
+        auctionEntered:[]
 
       });
   
