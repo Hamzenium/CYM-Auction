@@ -1,4 +1,5 @@
 const express = require('express');
+const { numberToString } = require('pdf-lib');
 const router = express.Router();
 
 
@@ -19,6 +20,44 @@ router.post('/enter/auction', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+router.post('/add/bid', async (req, res) => {
+    const { item_id, user_id } = req.body;
+
+    if (!item_id || !user_id) {
+        return res.status(400).json({ error: 'Missing item_id or user_id in request body' });
+    }
+
+    try {
+        const itemRef = req.app.locals.admin.firestore().collection('items').doc(item_id);
+        const itemDoc = await itemRef.get();
+
+        if (!itemDoc.exists) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+
+        const itemData = itemDoc.data();
+        const current_price = Number(itemData.currentPrice);
+        const increment = Number(itemData.bidIncrement);
+
+        // Calculate total price
+        const total = current_price + increment;
+        const price = total.toString(); 
+
+        await itemRef.update({
+            currentPrice: price,
+            currentBidder: user_id
+        });
+
+        res.status(200).json({ message: 'Bid added successfully' });
+    } catch (error) {
+        console.error('Error adding bid:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
 
 
 
