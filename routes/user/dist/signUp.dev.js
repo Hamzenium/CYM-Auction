@@ -4,20 +4,21 @@ var express = require('express');
 
 var router = express.Router(); // intialize the DB of the user
 
-router.post('/users', function _callee(req, res) {
-  var _req$body, email, password, name, userRecord;
+router.post('/users/signup', function _callee(req, res) {
+  var _req$body, email, password, name, address, userRecord;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _req$body = req.body, email = _req$body.email, password = _req$body.password, name = _req$body.name;
+          _req$body = req.body, email = _req$body.email, password = _req$body.password, name = _req$body.name, address = _req$body.address;
           _context.prev = 1;
           _context.next = 4;
           return regeneratorRuntime.awrap(req.app.locals.admin.auth().createUser({
             email: email,
             password: password,
-            displayName: name
+            displayName: name,
+            address: address
           }));
 
         case 4:
@@ -28,7 +29,9 @@ router.post('/users', function _callee(req, res) {
             name: name,
             items: [],
             itemsBought: [],
-            itemsDelivered: []
+            itemsDelivered: [],
+            auctionEntered: [],
+            address: address
           }));
 
         case 7:
