@@ -9,11 +9,7 @@ router.post('/users/signUp', async (req, res) => {
       const userRecord = await req.app.locals.admin.auth().createUser({
         email: email,
         password: password,
-        fName: fName,
-		lName: laname,
-		streetAddress: streetAddress,
-		streetNumber: streetNumber,
-		postal: postal
+        fName: fName 
       });
   
       await req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
@@ -21,8 +17,7 @@ router.post('/users/signUp', async (req, res) => {
         fName: fName,
 		lName: lname,
 		streetAddress: streetAddress,
-		streetNumber: streetNumber,
-		postal: postal,
+		streetNumber
         items: [],
         itemsBought: [],
         itemsDelivered:[],
