@@ -5,8 +5,8 @@ const admin = require('firebase-admin');
 const usersRouter = require('./routes/user/signUp');
 const itemsRouter = require('./routes/item/ItemCatalogue');
 const searchRouter = require('./routes/search/invertedSearch');
-const  biddingItem = require('./routes/bidding/biddingItem');
-
+const biddingItem = require('./routes/bidding/biddingItem');
+const paymentItem = require('./routes/payment/payment');
 const app = express();
 const serviceAccount = require('./key.json');
 admin.initializeApp({
@@ -24,7 +24,7 @@ app.use('/api', usersRouter);
 app.use('/api', itemsRouter);
 app.use('/api', searchRouter);
 app.use('/api', biddingItem);
-
+app.use('/api', paymentItem);
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on http://localhost:3000 in mode", this.address().port, app.settings.env);

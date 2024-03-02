@@ -2,11 +2,6 @@
 
 var express = require('express');
 
-var _require = require('pdf-lib'),
-    pdfDocEncodingDecode = _require.pdfDocEncodingDecode,
-    copyStringIntoBuffer = _require.copyStringIntoBuffer,
-    error = _require.error;
-
 var router = express.Router();
 router.post('/enter/auction', function _callee(req, res) {
   var _req$body, item_id, user_id, userDocRef;
@@ -167,7 +162,7 @@ router.post('/add/bid', function _callee3(req, res) {
           _itemData = _itemDoc.data();
           uid = _itemData.winningBidderId;
           _context3.next = 21;
-          return regeneratorRuntime.awrap(winner(uid, req, res));
+          return regeneratorRuntime.awrap(winner(uid, item_id, req, res));
 
         case 21:
           winnerName = _context3.sent;
@@ -193,7 +188,7 @@ router.post('/add/bid', function _callee3(req, res) {
           _itemData2 = _itemDoc2.data();
           _uid = _itemData2.winningBidderId;
           _context3.next = 33;
-          return regeneratorRuntime.awrap(winner(_uid));
+          return regeneratorRuntime.awrap(winner(_uid, item_id));
 
         case 33:
           _winnerName = _context3.sent;
@@ -233,7 +228,7 @@ router.post('/add/bid', function _callee3(req, res) {
   }, null, null, [[3, 44]]);
 });
 
-function setStatus(item_id, req, res) {
+function setStatus(item_id, req) {
   var itemRef, itemDoc, _winner;
 
   return regeneratorRuntime.async(function setStatus$(_context4) {
@@ -286,7 +281,7 @@ function setStatus(item_id, req, res) {
   }, null, null, [[0, 13]]);
 }
 
-function winner(uid, req, res) {
+function winner(uid, item_id, req, res) {
   var userRef, userDoc, userData, winnerName;
   return regeneratorRuntime.async(function winner$(_context5) {
     while (1) {
@@ -301,19 +296,25 @@ function winner(uid, req, res) {
           userDoc = _context5.sent;
           userData = userDoc.data();
           winnerName = userData.name;
+          _context5.next = 9;
+          return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('users').doc(uid).update({
+            itemsBought: req.app.locals.admin.firestore.FieldValue.arrayUnion(item_id)
+          }));
+
+        case 9:
           return _context5.abrupt("return", winnerName);
 
-        case 10:
-          _context5.prev = 10;
+        case 12:
+          _context5.prev = 12;
           _context5.t0 = _context5["catch"](0);
           res.status(500).json("There were some unexpected erros");
 
-        case 13:
+        case 15:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[0, 10]]);
+  }, null, null, [[0, 12]]);
 }
 
 router.get('/dashboard/bid/:userId', function _callee4(req, res) {

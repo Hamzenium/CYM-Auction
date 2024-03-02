@@ -1,5 +1,4 @@
 const express = require('express');
-const { pdfDocEncodingDecode, copyStringIntoBuffer, error } = require('pdf-lib');
 const router = express.Router();
 
 
@@ -83,7 +82,7 @@ router.post('/add/bid', async (req, res) => {
             const itemDoc = await itemRef.get();
             const itemData = itemDoc.data();
             const uid = itemData.winningBidderId
-            const winnerName = await winner(uid,req,res)
+            const winnerName = await winner(uid,item_id,req,res)
             res.status(200).json("The Auction has ended and the winner is: "+winnerName)
         }
 
@@ -92,7 +91,7 @@ router.post('/add/bid', async (req, res) => {
             const itemDoc = await itemRef.get();
             const itemData = itemDoc.data();
             const uid = itemData.winningBidderId
-            const winnerName = await winner(uid)
+            const winnerName = await winner(uid,item_id)
             res.status(200).json("The Auction has ended and the winner is: "+winnerName)
         }
 
@@ -114,7 +113,7 @@ router.post('/add/bid', async (req, res) => {
     }
 });
 
-async function setStatus(item_id, req, res) {
+async function setStatus(item_id, req) {
     try {
         const itemRef = req.app.locals.admin.firestore().collection('items').doc(item_id);
         const itemDoc = await itemRef.get().catch(error => { throw error; });
@@ -137,13 +136,16 @@ async function setStatus(item_id, req, res) {
     }
 }
 
-async function winner(uid,req,res){
+async function winner(uid,item_id,req,res){
 
     try{
         const userRef = req.app.locals.admin.firestore().collection('users').doc(uid);
         const userDoc = await userRef.get();
         const userData = userDoc.data();
         const winnerName =  userData.name
+        await req.app.locals.admin.firestore().collection('users').doc(uid).update({
+            itemsBought: req.app.locals.admin.firestore.FieldValue.arrayUnion(item_id)
+        });
         return winnerName
     }
     catch(error){

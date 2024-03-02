@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const addSearch = require('../search/invertedSearch');
 
 router.post('/items/:userId', async (req, res) => {
     const userID = req.params.userId;

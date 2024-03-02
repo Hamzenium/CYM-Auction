@@ -3,13 +3,8 @@
 var express = require('express');
 
 var router = express.Router();
-
-var search = require('../search/invertedSearch');
-
-var addSearch = require('../search/invertedSearch');
-
 router.post('/items/:userId', function _callee(req, res) {
-  var userID, _req$body, title, description, startingPrice, images, category, condition, otherDetails, itemRef, _JSON;
+  var userID, _req$body, title, description, startingPrice, images, category, condition, otherDetails, itemRef, itemObject;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -26,32 +21,32 @@ router.post('/items/:userId', function _callee(req, res) {
             currentPrice: startingPrice,
             bidIncrement: 100,
             sellerId: userID,
-            // Use userID here
             images: images,
             category: category,
             condition: condition,
             auctionStatus: 'open',
             startTime: req.app.locals.admin.firestore.FieldValue.serverTimestamp(),
-            // Current timestamp
             endTime: null,
             winningBidderId: null,
+            currentBidder: null,
             otherDetails: otherDetails
           }));
 
         case 5:
           itemRef = _context.sent;
           _context.next = 8;
-          return regeneratorRuntime.awrap(addSearch(itemRef.id, title, description, req.app.locals.admin));
+          return regeneratorRuntime.awrap(updateSearchIndex(itemRef.id, title, description, req.app.locals.admin));
 
         case 8:
-          _JSON = {
-            "itemRef": itemRef.id,
-            "title": title,
-            "description": description
+          // Construct the JSON object
+          itemObject = {
+            itemRef: itemRef.id,
+            title: title,
+            description: description
           };
           _context.next = 11;
-          return regeneratorRuntime.awrap(admin.firestore().collection('users').doc(userID).update({
-            items: req.app.locals.admin.firestore.FieldValue.arrayUnion(_JSON)
+          return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('users').doc(userID).update({
+            items: req.app.locals.admin.firestore.FieldValue.arrayUnion(itemObject)
           }));
 
         case 11:
@@ -159,4 +154,117 @@ router.put('/items/:itemId', function _callee3(req, res) {
     }
   }, null, null, [[2, 8]]);
 });
+
+function updateSearchIndex(itemId, title, description, admin) {
+  var stopWords, combinedText, words, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, word, lowercaseWord, wordDoc;
+
+  return regeneratorRuntime.async(function updateSearchIndex$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          stopWords = ['a', 'an', 'the', 'and', 'or', 'but', 'to', 'of', 'for', 'in', 'on', 'with', 'by', 'at', 'from', 'about', 'into', 'during', 'before', 'after', 'above', 'below', 'between', 'under', 'among', 'through', 'within', 'without', 'behind', 'beyond', 'beside', 'above', 'below', 'amongst', 'underneath', 'whereas', 'here', 'there', 'when', 'how', 'what', 'who', 'which', 'why', 'whom', 'whose'];
+          combinedText = (title + ' ' + description).toLowerCase();
+          words = combinedText.split(" ").filter(function (word) {
+            return !stopWords.includes(word);
+          });
+          _context4.prev = 3;
+          _iteratorNormalCompletion = true;
+          _didIteratorError = false;
+          _iteratorError = undefined;
+          _context4.prev = 7;
+          _iterator = words[Symbol.iterator]();
+
+        case 9:
+          if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+            _context4.next = 25;
+            break;
+          }
+
+          word = _step.value;
+          // Convert word to lowercase
+          lowercaseWord = word.toLowerCase();
+          _context4.next = 14;
+          return regeneratorRuntime.awrap(admin.firestore().collection('search').doc(lowercaseWord).get());
+
+        case 14:
+          wordDoc = _context4.sent;
+
+          if (!wordDoc.exists) {
+            _context4.next = 20;
+            break;
+          }
+
+          _context4.next = 18;
+          return regeneratorRuntime.awrap(admin.firestore().collection('search').doc(lowercaseWord).update({
+            itemIds: admin.firestore.FieldValue.arrayUnion(itemId)
+          }));
+
+        case 18:
+          _context4.next = 22;
+          break;
+
+        case 20:
+          _context4.next = 22;
+          return regeneratorRuntime.awrap(admin.firestore().collection('search').doc(lowercaseWord).set({
+            itemIds: [itemId]
+          }));
+
+        case 22:
+          _iteratorNormalCompletion = true;
+          _context4.next = 9;
+          break;
+
+        case 25:
+          _context4.next = 31;
+          break;
+
+        case 27:
+          _context4.prev = 27;
+          _context4.t0 = _context4["catch"](7);
+          _didIteratorError = true;
+          _iteratorError = _context4.t0;
+
+        case 31:
+          _context4.prev = 31;
+          _context4.prev = 32;
+
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
+          }
+
+        case 34:
+          _context4.prev = 34;
+
+          if (!_didIteratorError) {
+            _context4.next = 37;
+            break;
+          }
+
+          throw _iteratorError;
+
+        case 37:
+          return _context4.finish(34);
+
+        case 38:
+          return _context4.finish(31);
+
+        case 39:
+          console.log('Search index updated successfully');
+          _context4.next = 46;
+          break;
+
+        case 42:
+          _context4.prev = 42;
+          _context4.t1 = _context4["catch"](3);
+          console.error('Error updating search index:', _context4.t1);
+          throw _context4.t1;
+
+        case 46:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[3, 42], [7, 27, 31, 39], [32,, 34, 38]]);
+}
+
 module.exports = router;
