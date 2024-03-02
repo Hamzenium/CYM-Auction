@@ -28,8 +28,8 @@ router.post('/users/signup', function _callee(req, res) {
             email: email,
             name: name,
             items: [],
+            itemsWon: [],
             itemsBought: [],
-            itemsDelivered: [],
             auctionEntered: [],
             address: address
           }));

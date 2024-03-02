@@ -23,7 +23,9 @@ router.get('/search/:word', async (req, res) => {
 
             if (itemDoc.exists) {
                 const itemData = itemDoc.data();
-                itemsData.push(itemData);
+                if (itemData.status == "open"){
+                    itemsData.push(itemData);
+                }
             }
         }
 

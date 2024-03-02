@@ -17,8 +17,8 @@ router.post('/users/signup', async (req, res) => {
         email: email,
         name: name,
         items: [],
-        itemsBought: [],
-        itemsDelivered:[],
+        itemsWon: [],
+        itemsBought:[],
         auctionEntered:[],
         address: address,
 
