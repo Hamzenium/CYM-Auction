@@ -1,5 +1,5 @@
 const express = require('express');
-const { pdfDocEncodingDecode, copyStringIntoBuffer } = require('pdf-lib');
+const { pdfDocEncodingDecode, copyStringIntoBuffer, error } = require('pdf-lib');
 const router = express.Router();
 
 
@@ -20,6 +20,44 @@ router.post('/enter/auction', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+router.get('/auction/time/left', async (req, res) => {
+    const { item_id } = req.body;
+    if (!item_id) {
+        throw new Error("Item id not sent");
+    }
+    try {
+        const itemRef = req.app.locals.admin.firestore().collection('items').doc(item_id);
+        const itemDoc = await itemRef.get();
+        const itemData = itemDoc.data();
+        const currentTime = new Date().getTime();
+        const endTime = itemData.endTime.toDate().getTime();
+
+        const timeDifference = endTime - currentTime;
+        let timeLeft;
+        if (timeDifference <= 0) {
+            timeLeft = "Auction has ended";
+        } else {
+            const daysLeft = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const hoursLeft = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutesLeft = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+
+            if (daysLeft > 0) {
+                timeLeft = `${daysLeft} days ${hoursLeft} hours ${minutesLeft} minutes`;
+            } else if (hoursLeft > 0) {
+                timeLeft = `${hoursLeft} hours ${minutesLeft} minutes`;
+            } else {
+                timeLeft = `${minutesLeft} minutes`;
+            }
+        }
+
+        res.status(200).json({ timeLeft });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 router.post('/add/bid', async (req, res) => {
     const { item_id, user_id } = req.body;
