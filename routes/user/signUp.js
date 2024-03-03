@@ -1,74 +1,30 @@
-import {initializeApp, getAuth, createUserWithEmailAndPassword} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
-import {getDatabase, set, ref} 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js';
-import {getAuth, createUserWithEmailAndPassword} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
-
-
 const express = require('express');
 const router = express.Router();
 
-const firebaseConfig = {
-
-  apiKey: "AIzaSyASzODFRoEywWL42LyIFwxJbIxzQT2elRk",
-
-  authDomain: "eecs4413-6983c.firebaseapp.com",
-
-  databaseURL: "https://eecs4413-6983c-default-rtdb.firebaseio.com",
-
-  projectId: "eecs4413-6983c",
-
-  storageBucket: "eecs4413-6983c.appspot.com",
-
-  messagingSenderId: "236603067661",
-
-  appId: "1:236603067661:web:5e24337180d0eea066f444",
-
-  measurementId: "G-1CL3HY7CNK"
-
-};
-
-const app = initializeApp(firebaseConfig);
-//const db = getFirestore(app)
-const auth = getAuth(app)
-
  // intialize the DB of the user
 router.post('/users/signup', async (req, res) => {
-    const { email, password, fname, lname, streetAddress, streetNumber, postal } = req.body;
-	
-	//create User using SDK
-	createUserWithEmailAndPassword(auth, email, password)
-	.then((userCredential) ==>{
-		const user = userCredential.user;
-	})
-	.catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
-  });
-	
-	/*
-	non sdk user creation
+    const { email, password, firstName, lastName, streetNumber, streetAddress } = req.body;
+  
     try {
       const userRecord = await req.app.locals.admin.auth().createUser({
         email: email,
         password: password,
-        fName: fName,
-		lName: laname,
-		streetAddress: streetAddress,
-		streetNumber: streetNumber,
-		postal: postal
+        firstName: firstName,
+		lastName: lastName,
+		steetNumber: streetNumber,
+        steetAddress:  streetAddress
       });
-  */
-      await req.app.locals.admin.firestore().collection('users').doc(user.uid).set({
+  
+      await req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
         email: email,
-        fName: fName,
-		lName: lname,
-		streetAddress: streetAddress,
-		streetNumber: streetNumber,
-		postal: postal,
+        firstName: firstName,
+		lastName: lastName,
+		steetNumber: streetNumber,
+        steetAddress:  streetAddress,
         items: [],
-        itemsBought: [],
-        itemsDelivered:[],
-        auctionEntered:[]
+        itemsWon: [],
+        itemsBought:[],
+        auctionEntered:[],
 
       });
   
@@ -98,4 +54,6 @@ router.post('/users/signup', async (req, res) => {
     }
   });
 
+
+  
 module.exports = router;
