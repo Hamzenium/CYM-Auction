@@ -3,7 +3,7 @@ const router = express.Router();
 
  // intialize the DB of the user
 router.post('/users/signup', async (req, res) => {
-    const { email, password, firstName, lastName, streetNumber, streetAddress } = req.body;
+    const { email, password, firstName, lastName, streetNumber, streetAddress, postal } = req.body;
   
     try {
       const userRecord = await req.app.locals.admin.auth().createUser({
@@ -12,7 +12,8 @@ router.post('/users/signup', async (req, res) => {
         firstName: firstName,
 		lastName: lastName,
 		steetNumber: streetNumber,
-        steetAddress:  streetAddress
+        steetAddress:  streetAddress,
+		postal: postal
       });
   
       await req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
@@ -21,6 +22,7 @@ router.post('/users/signup', async (req, res) => {
 		lastName: lastName,
 		steetNumber: streetNumber,
         steetAddress:  streetAddress,
+		postal, postal,
         items: [],
         itemsWon: [],
         itemsBought:[],
