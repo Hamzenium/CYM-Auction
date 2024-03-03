@@ -1,52 +1,46 @@
 const express = require('express');
 const router = express.Router();
-import {initializeApp, getAuth, createUserWithEmailAndPassword} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
-import {getDatabase, set, ref} 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js';
-import {getAuth, createUserWithEmailAndPassword} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
 
 
-const firebaseConfig = {
-
-  apiKey: "AIzaSyASzODFRoEywWL42LyIFwxJbIxzQT2elRk",
-
-  authDomain: "eecs4413-6983c.firebaseapp.com",
-
-  databaseURL: "https://eecs4413-6983c-default-rtdb.firebaseio.com",
-
-  projectId: "eecs4413-6983c",
-
-  storageBucket: "eecs4413-6983c.appspot.com",
-
-  messagingSenderId: "236603067661",
-
-  appId: "1:236603067661:web:5e24337180d0eea066f444",
-
-  measurementId: "G-1CL3HY7CNK"
-
-};
-
-const app = initializeApp(firebaseConfig);
-//const db = getFirestore(app)
-const auth = getAuth(app)
-
-
-signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-	const userDoc = await req.app.locals.admin.firestore().collection('users').doc(user.uid).get();
-    const userData = userDoc.data();
-      res.status(200).json({ userData });
+router.post('/users/signin', async (req, res) => {
+	const {email, password} = req.body;
+    try{
+		const userRecord = await req.app.locals.admin.auth().getUserByEmail(email)
+		if (!userRecord.exists) {
+			res.status(401).json({ error: 'Invalid Login' });
+			return;
+		}
+		else if (userRecord.password != password ){
+			res.status(401).json({ error: 'Invalid Login' });
+			return;
+		}
+		else{
+			
+			res.status(201).json({ message: 'User signed in successfully', userId: userRecord.uid });
+			router.get('/dashboard/:userId', async (req, res) => {
+			try {
+			  const userId = req.params.userId;
+			  const userDoc = await req.app.locals.admin.firestore().collection('users').doc(userId).get();
+			  if (!userDoc.exists) {
+				res.status(404).json({ error: 'User not found' });
+				return;
+			  }
+		  
+			  const userData = userDoc.data();
+			  res.status(200).json({ userData });
+			} catch (error) {
+			  console.error('Error retrieving user dashboard:', error);
+			  res.status(500).json({ error: 'Internal server error' });
+			}
+			
+		}
     }
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
+    catch(error){
+        console.error('Error signing in user:', error);
+			res.status(500).json({ error: 'Internal server error' });
+    }
   });
 
- // intialize the DB of the user
 
-	// to retrieve the dashboard of the user himself
-  
 
-module.exports = router;
+  module.exports = router;
