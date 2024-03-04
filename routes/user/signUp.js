@@ -1,5 +1,8 @@
-const express = require('express');
+
+//const express = require('express');
+import express from 'express';
 const router = express.Router();
+//const auth = require('@firebase/auth');
 
  // intialize the DB of the user
 router.post('/', async (req, res) => {
@@ -39,7 +42,7 @@ router.post('/', async (req, res) => {
 
 
   // to retrieve the dashboard of the user himself
-  router.get('/dashboard/:userId', async (req, res) => {
+ router.get('/dashboard/:userId', async (req, res) => {
     try {
       const userId = req.params.userId;
       const userDoc = await req.app.locals.admin.firestore().collection('users').doc(userId).get();
@@ -58,4 +61,4 @@ router.post('/', async (req, res) => {
 
 
   
-module.exports = router;
+export default router
