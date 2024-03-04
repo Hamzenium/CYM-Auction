@@ -2,29 +2,17 @@ const express = require('express');
 const router = express.Router();
 
 
-router.post('/', async (req, res) => {
-	const { email, password } = req.body;
-	//res.status(400).json({ error: 'Not Yet Implimented' });
-		email: email,
-		password: password
+router.get('/', async (req, res) => {
+	const {email, password} = req.body;
+	res.status(400).json({ error: 'Not Yet Implimented' });
     try{
-		/*const userRecord = await */req.app.locals.admin.BaseAuth.getUserByEmail(req.params.email)
-		//.getUserByEmail(email)
-		.then((userRecord) =>{
-			cosole.log('valid email');
-		})
-		.catch((error) => {
+		const userRecord = await req.app.locals.admin.auth().getUserByEmail(req.params.email)
+		if (!userRecord.exists) {
 			res.status(401).json({ error: 'Invalid Login' });
 			return;
-		});
-		if (!userRecord){
-			res.status(401).json({ error: 'Invalid email' });
-			return;
-			console.log('here');
 		}
-		
-		else if (userRecord.password != password ){
-			res.status(401).json({ error: 'Invalid Password' });
+		else if (userRecord.password != req.params.password ){
+			res.status(401).json({ error: 'Invalid Login' });
 			return;
 		}
 		else{
@@ -54,9 +42,9 @@ router.post('/', async (req, res) => {
 	}
     catch(error){
         console.error('Error signing in user:', error);
-		res.status(500).json({ error: 'Internal server error' });
+			res.status(500).json({ error: 'Internal server error' });
     }
   });
- 
   
-module.exports = router;
+  
+ module.exports = router;

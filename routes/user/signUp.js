@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
  // intialize the DB of the user
-router.post('/users/signup', async (req, res) => {
+router.post('/', async (req, res) => {
     const { email, password, firstName, lastName, streetNumber, streetAddress, postal } = req.body;
   
     try {

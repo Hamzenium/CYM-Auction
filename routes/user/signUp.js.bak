@@ -2,26 +2,31 @@ const express = require('express');
 const router = express.Router();
 
  // intialize the DB of the user
-router.post('/users/signUp', async (req, res) => {
-    const { email, password, name } = req.body;
+router.post('/signup', async (req, res) => {
+    const { email, password, firstName, lastName, streetNumber, streetAddress, postal } = req.body;
   
     try {
       const userRecord = await req.app.locals.admin.auth().createUser({
         email: email,
         password: password,
-        fName: fName 
+        firstName: firstName,
+		lastName: lastName,
+		steetNumber: streetNumber,
+        steetAddress:  streetAddress,
+		postal: postal
       });
   
       await req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
         email: email,
-        fName: fName,
-		lName: lname,
-		streetAddress: streetAddress,
-		streetNumber
+        firstName: firstName,
+		lastName: lastName,
+		steetNumber: streetNumber,
+        steetAddress:  streetAddress,
+		postal, postal,
         items: [],
-        itemsBought: [],
-        itemsDelivered:[],
-        auctionEntered:[]
+        itemsWon: [],
+        itemsBought:[],
+        auctionEntered:[],
 
       });
   
@@ -51,4 +56,6 @@ router.post('/users/signUp', async (req, res) => {
     }
   });
 
+
+  
 module.exports = router;
