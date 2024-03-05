@@ -55,7 +55,7 @@ app.locals.admin = admin;
 // Routes
 app.use(cors());
 app.use('/signup', signUp);
-//app.use('/signin', userRouterSignIn);
+app.use('/signin', signIn);
 //app.use('/api', itemsRouter);
 //app.use('/api', searchRouter);
 //app.use('/api', biddingItem);

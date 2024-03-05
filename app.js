@@ -13,7 +13,7 @@ import {default as signIn} from './routes/user/signIn.js';
 import {default as signUp}  from './routes/user/signUp.js';
 //const signUp = signUpPkg;
 
-//import router as itemsRouter  from './routes/item/ItemCatalogue';
+import {default as itemCatalogue}  from './routes/item/ItemCatalogue';
 //import router as searchRouter from './routes/search/invertedSearch';
 //import router as  biddingItem from './routes/bidding/biddingItem';
 
@@ -56,7 +56,7 @@ app.locals.admin = admin;
 app.use(cors());
 app.use('/signup', signUp);
 app.use('/signin', signIn);
-//app.use('/api', itemsRouter);
+app.use('/itemCatalogue', itemCatalogue);
 //app.use('/api', searchRouter);
 //app.use('/api', biddingItem);
 
