@@ -9,17 +9,16 @@ import corsPkg from 'cors';
 const cors = corsPkg;
 import pack from 'firebase-admin';
 const admin = pack
+
+
 import {default as signIn} from './routes/user/signIn.js';
 import {default as signUp}  from './routes/user/signUp.js';
-//const signUp = signUpPkg;
-
 import {default as itemCatalogue}  from './routes/item/ItemCatalogue';
 import {default as searchRouter} from './routes/search/invertedSearch';
 import {default as  biddingItem} from './routes/bidding/biddingItem';
 import {default as paymentItem} from './routes/payment/payment';
 
 const app = express();
-//import serviceAccount from './key.json' with {type: 'json'};
 
 import serviceAccount from './key.json' with {type: 'json'};
 admin.initializeApp({
@@ -45,8 +44,8 @@ const firebaseConfig = {
   measurementId: "G-1CL3HY7CNK"
 
 };
-////errrors start here 
-//const firebaseapp = initializeApp(firebaseConfig);
+
+
 
 // Middleware to parse JSON request body
 app.use(bodyParser.json());
@@ -58,8 +57,9 @@ app.use(cors());
 app.use('/signup', signUp);
 app.use('/signin', signIn);
 app.use('/itemCatalogue', itemCatalogue);
-//app.use('/api', searchRouter);
+app.use('/api', searchRouter);
 app.use('/api', biddingItem);
+app.use('/api', paymentItem);
 
 
 app.listen(process.env.PORT || 3000, function(){
