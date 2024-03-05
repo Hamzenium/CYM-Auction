@@ -1,7 +1,9 @@
 import express from 'express';
-const signUp = express.Router();
+const router = express.Router();
 
-import {initializeApp} from '@firebase/app';
+import {initializeApp} from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 //const authLib = require('@firebase/auth');
 
 const firebaseConfig = {
@@ -24,17 +26,16 @@ const firebaseConfig = {
 
 };
 
-const app = appLib.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const auth = authLib.getAuth(app)
+const auth = getAuth(app)
 
-signIn.post('/', async (req, res) => {
+router.post('/', async (req, res) => {
 	const { email, password } = req.body;
 	//res.status(400).json({ error: 'Not Yet Implimented' });
 		
     try{
-		auth.signInWithEmailAndPassword(email, password)
-		//.getUserByEmail(email)
+		signInWithEmailAndPassword(auth, email, password)
 		.then((userCredential) =>{
 			var user = userCredential.user;
 			res.status(200).json({message: 'User signed in successfully', userId: user.uid});
@@ -85,4 +86,4 @@ signIn.post('/', async (req, res) => {
   });
  
   
-export default {signIn}
+export default router

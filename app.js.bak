@@ -9,7 +9,7 @@ import corsPkg from 'cors';
 const cors = corsPkg;
 import pack from 'firebase-admin';
 const admin = pack
-//import {signIn.get, signIn.post} from './routes/user/signIn.js';
+import {default as signIn} from './routes/user/signIn.js';
 import {default as signUp}  from './routes/user/signUp.js';
 //const signUp = signUpPkg;
 

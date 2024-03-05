@@ -9,7 +9,7 @@ import corsPkg from 'cors';
 const cors = corsPkg;
 import pack from 'firebase-admin';
 const admin = pack
-//import {default as signIn} from './routes/user/signIn.js';
+import {default as signIn} from './routes/user/signIn.js';
 import {default as signUp}  from './routes/user/signUp.js';
 //const signUp = signUpPkg;
 
@@ -55,7 +55,7 @@ app.locals.admin = admin;
 // Routes
 app.use(cors());
 app.use('/signup', signUp);
-//app.use('/signin', userRouterSignIn);
+app.use('/signin', signIn);
 //app.use('/api', itemsRouter);
 //app.use('/api', searchRouter);
 //app.use('/api', biddingItem);
