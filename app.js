@@ -1,6 +1,8 @@
 //import { initializeApp } from "firebase/app";
 
-//changed const require to import pkg from file, const name = pkg
+//changed const name require('file') 
+//		-> 	import pkg from 'file'
+//			const name = pkg
 import expressPkg from 'express';
 const express = expressPkg;
 import pkg  from 'body-parser';
@@ -66,4 +68,6 @@ app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on http://localhost:3000 in mode", this.address().port, app.settings.env);
 });
 
+
+//changed modules.exports = app to the following line
 export default app;
