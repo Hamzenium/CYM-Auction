@@ -14,8 +14,9 @@ import {default as signUp}  from './routes/user/signUp.js';
 //const signUp = signUpPkg;
 
 import {default as itemCatalogue}  from './routes/item/ItemCatalogue';
-//import router as searchRouter from './routes/search/invertedSearch';
-//import router as  biddingItem from './routes/bidding/biddingItem';
+import {default as searchRouter} from './routes/search/invertedSearch';
+import {default as  biddingItem} from './routes/bidding/biddingItem';
+import {default as paymentItem} from './routes/payment/payment';
 
 const app = express();
 //import serviceAccount from './key.json' with {type: 'json'};
@@ -58,7 +59,7 @@ app.use('/signup', signUp);
 app.use('/signin', signIn);
 app.use('/itemCatalogue', itemCatalogue);
 //app.use('/api', searchRouter);
-//app.use('/api', biddingItem);
+app.use('/api', biddingItem);
 
 
 app.listen(process.env.PORT || 3000, function(){
