@@ -15,10 +15,10 @@ const admin = pack
 
 import {default as signIn} from './routes/user/signIn.js';
 import {default as signUp}  from './routes/user/signUp.js';
-import {default as itemCatalogue}  from './routes/item/ItemCatalogue';
-import {default as searchRouter} from './routes/search/invertedSearch';
-import {default as  biddingItem} from './routes/bidding/biddingItem';
-import {default as paymentItem} from './routes/payment/payment';
+import {default as itemCatalogue}  from './routes/item/ItemCatalogue.js';
+import {default as searchRouter} from './routes/search/invertedSearch.js';
+import {default as  biddingItem} from './routes/bidding/biddingItem.js';
+import {default as paymentItem} from './routes/payment/payment.js';
 
 const app = express();
 
