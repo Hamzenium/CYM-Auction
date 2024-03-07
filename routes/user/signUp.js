@@ -5,7 +5,7 @@ const router = express.Router();
 //const auth = require('@firebase/auth');
 
  // intialize the DB of the user
-router.post('/', async (req, res) => {
+router.post('/users/signup', async (req, res) => {
     const { email, password, firstName, lastName, streetNumber, streetAddress, postal } = req.body;
   
     try {

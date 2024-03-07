@@ -30,7 +30,7 @@ const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app)
 
-router.post('/', async (req, res) => {
+router.post('/users/signin', async (req, res) => {
 	const { email, password } = req.body;
 	//res.status(400).json({ error: 'Not Yet Implimented' });
 		

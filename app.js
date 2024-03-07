@@ -56,9 +56,9 @@ app.locals.admin = admin;
 
 // Routes
 app.use(cors());
-app.use('/signup', signUp);
-app.use('/signin', signIn);
-app.use('/itemCatalogue', itemCatalogue);
+app.use('/api', signUp);
+app.use('/api', signIn);
+app.use('/api', itemCatalogue);
 app.use('/api', searchRouter);
 app.use('/api', biddingItem);
 app.use('/api', paymentItem);
