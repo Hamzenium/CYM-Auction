@@ -19,7 +19,6 @@ const router = express.Router();
                   address: address
               });
 
-              // Add user details to Firestore
               await req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
                   email: email,
                   name: name,
