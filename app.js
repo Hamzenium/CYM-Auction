@@ -12,6 +12,11 @@ const cors = corsPkg;
 import pack from 'firebase-admin';
 const admin = pack
 
+import pathPkg from 'path';
+const path = pathPkg;
+
+const __dirname = path.resolve(path.dirname('')); 
+//const path = require('path')
 
 import {default as signIn} from './routes/user/signIn.js';
 import {default as signUp}  from './routes/user/signUp.js';
@@ -63,6 +68,10 @@ app.use('/api', searchRouter);
 app.use('/api', biddingItem);
 app.use('/api', paymentItem);
 
+
+app.get('/signin', function(req, res){
+	res.sendFile(path.join(__dirname + '/webpages/signin.html'))
+});
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on http://localhost:3000 in mode", this.address().port, app.settings.env);
