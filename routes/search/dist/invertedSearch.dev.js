@@ -22,8 +22,8 @@ router.get('/search/:word', function _callee(req, res) {
             break;
           }
 
-          return _context.abrupt("return", res.status(404).json({
-            error: 'No items found for the search word'
+          return _context.abrupt("return", res.status(200).json({
+            items: []
           }));
 
         case 7:
@@ -33,7 +33,7 @@ router.get('/search/:word', function _callee(req, res) {
           i = 0;
 
         case 11:
-          if (!(i < Math.min(itemIds.length, 10))) {
+          if (!(i < itemIds.length)) {
             _context.next = 20;
             break;
           }
@@ -48,7 +48,7 @@ router.get('/search/:word', function _callee(req, res) {
           if (itemDoc.exists) {
             itemData = itemDoc.data();
 
-            if (itemData.status == "open") {
+            if (itemData.auctionStatus === "open") {
               itemsData.push(itemData);
             }
           }

@@ -10,20 +10,20 @@ router.get('/search/:word', async (req, res) => {
         const searchDoc = await req.app.locals.admin.firestore().collection('search').doc(word).get();
 
         if (!searchDoc.exists) {
-            return res.status(404).json({ error: 'No items found for the search word' });
+            return res.status(200).json({ items: [] });
         }
 
         const searchItemData = searchDoc.data();
         const itemIds = searchItemData.itemIds || [];
 
         const itemsData = [];
-        for (let i = 0; i < Math.min(itemIds.length, 10); i++) {
+        for (let i = 0; i < itemIds.length; i++) {
             const itemId = itemIds[i];
             const itemDoc = await req.app.locals.admin.firestore().collection('items').doc(itemId).get();
 
             if (itemDoc.exists) {
                 const itemData = itemDoc.data();
-                if (itemData.status == "open"){
+                if (itemData.auctionStatus === "open") {
                     itemsData.push(itemData);
                 }
             }
@@ -35,6 +35,7 @@ router.get('/search/:word', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
   
