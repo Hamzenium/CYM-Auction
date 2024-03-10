@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router(); // intialize the DB of the user
 
 router.post('/users/signup', function _callee(req, res) {
-  var _req$body, email, password, name, address, userRecord;
+  var _req$body, email, password, name, address, userRecord, _userRecord;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -14,6 +14,28 @@ router.post('/users/signup', function _callee(req, res) {
           _req$body = req.body, email = _req$body.email, password = _req$body.password, name = _req$body.name, address = _req$body.address;
           _context.prev = 1;
           _context.next = 4;
+          return regeneratorRuntime.awrap(req.app.locals.admin.auth().getUserByEmail(email));
+
+        case 4:
+          userRecord = _context.sent;
+          res.status(200).json({
+            message: 'User is signed in.',
+            userId: userRecord.uid
+          });
+          _context.next = 28;
+          break;
+
+        case 8:
+          _context.prev = 8;
+          _context.t0 = _context["catch"](1);
+
+          if (!(_context.t0.code === 'auth/user-not-found')) {
+            _context.next = 26;
+            break;
+          }
+
+          _context.prev = 11;
+          _context.next = 14;
           return regeneratorRuntime.awrap(req.app.locals.admin.auth().createUser({
             email: email,
             password: password,
@@ -21,10 +43,10 @@ router.post('/users/signup', function _callee(req, res) {
             address: address
           }));
 
-        case 4:
-          userRecord = _context.sent;
-          _context.next = 7;
-          return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
+        case 14:
+          _userRecord = _context.sent;
+          _context.next = 17;
+          return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('users').doc(_userRecord.uid).set({
             email: email,
             name: name,
             items: [],
@@ -34,28 +56,38 @@ router.post('/users/signup', function _callee(req, res) {
             address: address
           }));
 
-        case 7:
+        case 17:
           res.status(201).json({
             message: 'User created successfully',
-            userId: userRecord.uid
+            userId: _userRecord.uid
           });
-          _context.next = 14;
+          _context.next = 24;
           break;
 
-        case 10:
-          _context.prev = 10;
-          _context.t0 = _context["catch"](1);
-          console.error('Error creating user:', _context.t0);
+        case 20:
+          _context.prev = 20;
+          _context.t1 = _context["catch"](11);
+          console.error('Error creating user:', _context.t1);
           res.status(500).json({
             error: 'Internal server error'
           });
 
-        case 14:
+        case 24:
+          _context.next = 28;
+          break;
+
+        case 26:
+          console.error('Error checking user existence:', _context.t0);
+          res.status(500).json({
+            error: 'Internal server error'
+          });
+
+        case 28:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[1, 10]]);
+  }, null, null, [[1, 8], [11, 20]]);
 }); // to retrieve the dashboard of the user himself
 
 router.get('/dashboard/:userId', function _callee2(req, res) {

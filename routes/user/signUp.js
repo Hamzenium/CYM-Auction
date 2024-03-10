@@ -2,34 +2,46 @@ const express = require('express');
 const router = express.Router();
 
  // intialize the DB of the user
-router.post('/users/signup', async (req, res) => {
-    const { email, password, name,  address } = req.body;
-  
-    try {
-      const userRecord = await req.app.locals.admin.auth().createUser({
-        email: email,
-        password: password,
-        displayName: name ,
-        address:  address
-      });
-  
-      await req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
-        email: email,
-        name: name,
-        items: [],
-        itemsWon: [],
-        itemsBought:[],
-        auctionEntered:[],
-        address: address,
+ router.post('/users/signup', async (req, res) => {
+  const { email, password, name, address } = req.body;
 
-      });
-  
-      res.status(201).json({ message: 'User created successfully', userId: userRecord.uid });
-    } catch (error) {
-      console.error('Error creating user:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
+  try {
+      const userRecord = await req.app.locals.admin.auth().getUserByEmail(email);
+
+      res.status(200).json({ message: 'User is signed in.', userId: userRecord.uid });
+  } catch (error) {
+      if (error.code === 'auth/user-not-found') {
+          try {
+              const userRecord = await req.app.locals.admin.auth().createUser({
+                  email: email,
+                  password: password,
+                  displayName: name,
+                  address: address
+              });
+
+              // Add user details to Firestore
+              await req.app.locals.admin.firestore().collection('users').doc(userRecord.uid).set({
+                  email: email,
+                  name: name,
+                  items: [],
+                  itemsWon: [],
+                  itemsBought: [],
+                  auctionEntered: [],
+                  address: address,
+              });
+
+              res.status(201).json({ message: 'User created successfully', userId: userRecord.uid });
+          } catch (error) {
+              console.error('Error creating user:', error);
+              res.status(500).json({ error: 'Internal server error' });
+          }
+      } else {
+          console.error('Error checking user existence:', error);
+          res.status(500).json({ error: 'Internal server error' });
+      }
+  }
+});
+
 
 
   // to retrieve the dashboard of the user himself
