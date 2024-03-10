@@ -20,7 +20,7 @@ router.get('/search/:word', async (req, res) => {
         for (let i = 0; i < itemIds.length; i++) {
             const itemId = itemIds[i];
             const itemDoc = await req.app.locals.admin.firestore().collection('items').doc(itemId).get();
-
+// new changes to the
             if (itemDoc.exists) {
                 const itemData = itemDoc.data();
                 if (itemData.auctionStatus === "open") {

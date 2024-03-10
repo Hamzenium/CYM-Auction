@@ -45,6 +45,7 @@ router.get('/search/:word', function _callee(req, res) {
         case 15:
           itemDoc = _context.sent;
 
+          // new changes to the
           if (itemDoc.exists) {
             itemData = itemDoc.data();
 
