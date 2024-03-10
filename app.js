@@ -73,6 +73,10 @@ app.get('/signin', function(req, res){
 	res.sendFile(path.join(__dirname + '/webpages/signin.html'))
 });
 
+app.get('/signup', function(req, res){
+	res.sendFile(path.join(__dirname + '/webpages/signup.html'))
+});
+
 app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on http://localhost:3000 in mode", this.address().port, app.settings.env);
 });

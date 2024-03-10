@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Sign-In</title>
+</head>
+<body>
+	<form action='api/users/signup' method='POST'>
+		<fieldset>
+			<legend>Sign up</legend>
+			<label for="email">Email:</label>
+			<input id='email' name='email' type="text"/><br/>
+			<label for="password">Password</label>
+			<input id='password' name='password' type="password"/><br/>
+			<label for="firstName">First Name:</label>
+			<input id='firstName' name='firstName' type="text"/><br/>
+			<label for="lastName">Last Name:</label>
+			<input id='lastName' name='lastName' type="text"/><br/>
+			<label for="streetNumber">Street Number:</label>
+			<input id='streetNumber' name='streetNumber' type="text"/><br/>
+			<label for="streetAddress">Street Address:</label>
+			<input id='streetAddress' name='streetAddress' type="text"/><br/>
+			<label for="postal">Postal Code:</label>
+			<input id='postal' name='postal' type="text"/><br/>
+			<button type='submit' name='sign up'> Sign Up</button>
+		</fieldset>
+	</form>
+</body>
