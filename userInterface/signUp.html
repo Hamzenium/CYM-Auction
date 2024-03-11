@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Signup</title>
+</head>
+<body>
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="address">Address:</label><br>
+        <input type="text" id="address" name="address" required><br><br>
+
+        <input type="submit" value="Sign Up">
+    </form>
+
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const formData = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                name: document.getElementById('name').value,
+                address: document.getElementById('address').value
+            };
+
+            const response = await fetch('https://cym-auction-55427f45c025.herokuapp.com/api/users/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const responseData = await response.json();
+
+            if (response.ok) {
+                console.log('Signup successful. Redirecting to dashboard...');
+                window.location.href = `dashboard.html?userId=${responseData.userId}`;
+            } else {
+                console.error('Error during signup:', responseData.error || 'Something went wrong. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

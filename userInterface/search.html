@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <style>
+        .search-results {
+            margin-top: 20px;
+        }
+
+        .search-item {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .item-description {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Search</h2>
+
+    <form id="searchForm">
+        <label for="searchQuery">Enter your search query:</label><br>
+        <input type="text" id="searchQuery" name="searchQuery" required><br><br>
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="searchResults" class="search-results">
+        <!-- Search results will be populated here -->
+    </div>
+
+    <script>
+        // Function to handle form submission
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const searchQuery = document.getElementById("searchQuery").value;
+            
+            // Call function to perform search with the search query
+            performSearch(searchQuery);
+        });
+
+        // Function to perform search and display results
+        function performSearch(query) {
+            // Example search results data (replace this with actual search logic)
+            const searchResults = [
+                { title: "MacBook Air", description: "Thin and light laptop by Apple" },
+                { title: "MacBook Pro", description: "Powerful laptop by Apple for professionals" }
+            ];
+
+            // Display search results
+            populateSearchResults(searchResults);
+        }
+
+        // Function to populate search results
+        function populateSearchResults(results) {
+            const searchResultsDiv = document.getElementById("searchResults");
+            let searchResultsHTML = '';
+
+            if (results.length === 0) {
+                searchResultsHTML = '<p>No results found.</p>';
+            } else {
+                results.forEach(result => {
+                    searchResultsHTML += `
+                        <div class="search-item">
+                            <div class="item-title">${result.title}</div>
+                            <div class="item-description">${result.description}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            searchResultsDiv.innerHTML = searchResultsHTML;
+        }
+    </script>
+</body>
+</html>

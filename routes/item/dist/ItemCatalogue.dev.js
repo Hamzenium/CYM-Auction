@@ -11,9 +11,20 @@ router.post('/items/:userId', function _callee(req, res) {
       switch (_context.prev = _context.next) {
         case 0:
           userID = req.params.userId;
-          _req$body = req.body, title = _req$body.title, description = _req$body.description, startingPrice = _req$body.startingPrice, images = _req$body.images, category = _req$body.category, condition = _req$body.condition, otherDetails = _req$body.otherDetails;
-          _context.prev = 2;
-          _context.next = 5;
+          _req$body = req.body, title = _req$body.title, description = _req$body.description, startingPrice = _req$body.startingPrice, images = _req$body.images, category = _req$body.category, condition = _req$body.condition, otherDetails = _req$body.otherDetails; // Check if req.body is empty
+
+          if (!(!title || !description || !startingPrice || !images || !category || !condition || !otherDetails)) {
+            _context.next = 4;
+            break;
+          }
+
+          return _context.abrupt("return", res.status(400).json({
+            error: 'Missing required fields in request body'
+          }));
+
+        case 4:
+          _context.prev = 4;
+          _context.next = 7;
           return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('items').add({
             title: title,
             description: description,
@@ -32,45 +43,45 @@ router.post('/items/:userId', function _callee(req, res) {
             otherDetails: otherDetails
           }));
 
-        case 5:
+        case 7:
           itemRef = _context.sent;
-          _context.next = 8;
+          _context.next = 10;
           return regeneratorRuntime.awrap(updateSearchIndex(itemRef.id, title, description, req.app.locals.admin));
 
-        case 8:
+        case 10:
           // Construct the JSON object
           itemObject = {
             itemRef: itemRef.id,
             title: title,
             description: description
           };
-          _context.next = 11;
+          _context.next = 13;
           return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('users').doc(userID).update({
             items: req.app.locals.admin.firestore.FieldValue.arrayUnion(itemObject)
           }));
 
-        case 11:
+        case 13:
           res.status(201).json({
             message: 'Item created successfully',
             itemId: itemRef.id
           });
-          _context.next = 18;
+          _context.next = 20;
           break;
 
-        case 14:
-          _context.prev = 14;
-          _context.t0 = _context["catch"](2);
+        case 16:
+          _context.prev = 16;
+          _context.t0 = _context["catch"](4);
           console.error('Error creating item:', _context.t0);
           res.status(500).json({
             error: 'Internal server error'
           });
 
-        case 18:
+        case 20:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[2, 14]]);
+  }, null, null, [[4, 16]]);
 }); //   retrieve the item's dashboard containing all the details of the auction item
 
 router.get('/items/:itemId', function _callee2(req, res) {

@@ -5,6 +5,11 @@ const router = express.Router();
  router.post('/users/signup', async (req, res) => {
   const { email, password, name, address } = req.body;
 
+  // Check if any of the required fields are empty
+  if (!email || !password || !name || !address) {
+      return res.status(400).json({ error: 'Missing required fields in request body' });
+  }
+
   try {
       const userRecord = await req.app.locals.admin.auth().getUserByEmail(email);
 
@@ -32,7 +37,7 @@ const router = express.Router();
               res.status(201).json({ message: 'User created successfully', userId: userRecord.uid });
           } catch (error) {
               console.error('Error creating user:', error);
-              res.status(500).json({ error: 'Internal server error' });
+              res.status(500).json({ error: 'Make sure all the required fields are added' });
           }
       } else {
           console.error('Error checking user existence:', error);

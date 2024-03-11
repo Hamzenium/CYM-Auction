@@ -2,45 +2,50 @@ const express = require('express');
 const router = express.Router();
 
 router.post('/items/:userId', async (req, res) => {
-    const userID = req.params.userId;
-    const { title, description, startingPrice, images, category, condition, otherDetails } = req.body;
-  
-    try {
-        const itemRef = await req.app.locals.admin.firestore().collection('items').add({
-            title: title,
-            description: description,
-            startingPrice: startingPrice,
-            currentPrice: startingPrice, 
-            bidIncrement: 100, 
-            sellerId: userID, 
-            images: images,
-            category: category,
-            condition: condition,
-            auctionStatus: 'open', 
-            startTime: req.app.locals.admin.firestore.FieldValue.serverTimestamp(), 
-            endTime: null, 
-            winningBidderId: null,
-            currentBidder: null,  
-            otherDetails: otherDetails
-        });
+  const userID = req.params.userId;
+  const { title, description, startingPrice, images, category, condition, otherDetails } = req.body;
 
-        await updateSearchIndex(itemRef.id, title, description, req.app.locals.admin)
+  // Check if req.body is empty
+  if (!title || !description || !startingPrice || !images || !category || !condition || !otherDetails) {
+      return res.status(400).json({ error: 'Missing required fields in request body' });
+  }
 
-        // Construct the JSON object
-        const itemObject = {
-            itemRef: itemRef.id,
-            title: title,
-            description: description
-        };
-        await req.app.locals.admin.firestore().collection('users').doc(userID).update({
-            items: req.app.locals.admin.firestore.FieldValue.arrayUnion(itemObject)
-        });
-  
-        res.status(201).json({ message: 'Item created successfully', itemId: itemRef.id });
-    } catch (error) {
-        console.error('Error creating item:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+  try {
+      const itemRef = await req.app.locals.admin.firestore().collection('items').add({
+          title: title,
+          description: description,
+          startingPrice: startingPrice,
+          currentPrice: startingPrice,
+          bidIncrement: 100,
+          sellerId: userID,
+          images: images,
+          category: category,
+          condition: condition,
+          auctionStatus: 'open',
+          startTime: req.app.locals.admin.firestore.FieldValue.serverTimestamp(),
+          endTime: null,
+          winningBidderId: null,
+          currentBidder: null,
+          otherDetails: otherDetails
+      });
+
+      await updateSearchIndex(itemRef.id, title, description, req.app.locals.admin)
+
+      // Construct the JSON object
+      const itemObject = {
+          itemRef: itemRef.id,
+          title: title,
+          description: description
+      };
+      await req.app.locals.admin.firestore().collection('users').doc(userID).update({
+          items: req.app.locals.admin.firestore.FieldValue.arrayUnion(itemObject)
+      });
+
+      res.status(201).json({ message: 'Item created successfully', itemId: itemRef.id });
+  } catch (error) {
+      console.error('Error creating item:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 

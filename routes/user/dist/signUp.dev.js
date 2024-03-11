@@ -11,31 +11,42 @@ router.post('/users/signup', function _callee(req, res) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _req$body = req.body, email = _req$body.email, password = _req$body.password, name = _req$body.name, address = _req$body.address;
-          _context.prev = 1;
-          _context.next = 4;
+          _req$body = req.body, email = _req$body.email, password = _req$body.password, name = _req$body.name, address = _req$body.address; // Check if any of the required fields are empty
+
+          if (!(!email || !password || !name || !address)) {
+            _context.next = 3;
+            break;
+          }
+
+          return _context.abrupt("return", res.status(400).json({
+            error: 'Missing required fields in request body'
+          }));
+
+        case 3:
+          _context.prev = 3;
+          _context.next = 6;
           return regeneratorRuntime.awrap(req.app.locals.admin.auth().getUserByEmail(email));
 
-        case 4:
+        case 6:
           userRecord = _context.sent;
           res.status(200).json({
             message: 'User is signed in.',
             userId: userRecord.uid
           });
-          _context.next = 28;
+          _context.next = 30;
           break;
 
-        case 8:
-          _context.prev = 8;
-          _context.t0 = _context["catch"](1);
+        case 10:
+          _context.prev = 10;
+          _context.t0 = _context["catch"](3);
 
           if (!(_context.t0.code === 'auth/user-not-found')) {
-            _context.next = 26;
+            _context.next = 28;
             break;
           }
 
-          _context.prev = 11;
-          _context.next = 14;
+          _context.prev = 13;
+          _context.next = 16;
           return regeneratorRuntime.awrap(req.app.locals.admin.auth().createUser({
             email: email,
             password: password,
@@ -43,9 +54,9 @@ router.post('/users/signup', function _callee(req, res) {
             address: address
           }));
 
-        case 14:
+        case 16:
           _userRecord = _context.sent;
-          _context.next = 17;
+          _context.next = 19;
           return regeneratorRuntime.awrap(req.app.locals.admin.firestore().collection('users').doc(_userRecord.uid).set({
             email: email,
             name: name,
@@ -56,38 +67,38 @@ router.post('/users/signup', function _callee(req, res) {
             address: address
           }));
 
-        case 17:
+        case 19:
           res.status(201).json({
             message: 'User created successfully',
             userId: _userRecord.uid
           });
-          _context.next = 24;
+          _context.next = 26;
           break;
 
-        case 20:
-          _context.prev = 20;
-          _context.t1 = _context["catch"](11);
+        case 22:
+          _context.prev = 22;
+          _context.t1 = _context["catch"](13);
           console.error('Error creating user:', _context.t1);
           res.status(500).json({
-            error: 'Internal server error'
+            error: 'Make sure all the required fields are added'
           });
 
-        case 24:
-          _context.next = 28;
+        case 26:
+          _context.next = 30;
           break;
 
-        case 26:
+        case 28:
           console.error('Error checking user existence:', _context.t0);
           res.status(500).json({
             error: 'Internal server error'
           });
 
-        case 28:
+        case 30:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[1, 8], [11, 20]]);
+  }, null, null, [[3, 10], [13, 22]]);
 }); // to retrieve the dashboard of the user himself
 
 router.get('/dashboard/:userId', function _callee2(req, res) {

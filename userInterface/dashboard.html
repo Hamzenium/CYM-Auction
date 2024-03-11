@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        .section-heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .item-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .item-description {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard">
+        <!-- Dashboard content will be populated here -->
+    </div>
+
+    <script>
+        // Function to fetch user data and populate the dashboard
+        async function populateDashboard() {
+            const endpoint = 'https://cym-auction-55427f45c025.herokuapp.com/api/dashboard/syLfdWrSOYgYUqsJvHWBYWn18GH3';
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log('Fetched userData:', data.userData);
+                    const userData = data.userData;
+                    let dashboardHTML = '';
+                    
+                    // Display user's name
+                    dashboardHTML += `<div class="section-heading">${userData.name}'s Dashboard</div>`;
+                    
+                    // Display user's items
+                    if (userData.items.length > 0) {
+                        dashboardHTML += `<div class="section-heading">User's Items</div>`;
+                        userData.items.forEach(item => {
+                            dashboardHTML += `
+                                <div class="item-card">
+                                    <div class="item-title">${item.title}</div>
+                                    <div class="item-description">${item.description}</div>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    document.getElementById('dashboard').innerHTML = dashboardHTML;
+                } else {
+                    console.error('Error:', data.error);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+
+        // Call populateDashboard function to populate the dashboard
+        populateDashboard();
+    </script>
+</body>
+</html>
