@@ -22,9 +22,7 @@ router.get('/search/:word', function _callee(req, res) {
             break;
           }
 
-          return _context.abrupt("return", res.status(200).json({
-            items: []
-          }));
+          return _context.abrupt("return", res.status(200).json("Item with the keyword does not exist"));
 
         case 7:
           searchItemData = searchDoc.data();

@@ -10,7 +10,7 @@ router.get('/search/:word', async (req, res) => {
         const searchDoc = await req.app.locals.admin.firestore().collection('search').doc(word).get();
 
         if (!searchDoc.exists) {
-            return res.status(200).json({ items: [] });
+            return res.status(200).json("Item with the keyword does not exist");
         }
 
         const searchItemData = searchDoc.data();
@@ -28,7 +28,6 @@ router.get('/search/:word', async (req, res) => {
                 }
             }
         }
-
         res.status(200).json({ items: itemsData });
     } catch (error) {
         console.error('Error fetching items:', error);
